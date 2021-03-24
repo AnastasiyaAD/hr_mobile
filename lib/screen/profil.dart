@@ -1,8 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:hr_mobile/screen/login.dart';
-import 'package:hr_mobile/screen/taskCreate.dart';
-import 'package:hr_mobile/screen/profil.dart';
 import 'package:hr_mobile/network_utils/api.dart';
 import 'package:scrolling_page_indicator/scrolling_page_indicator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -104,11 +102,6 @@ class _HomeState extends State<Home>{
       });
     }
   }
-   void _incrementCounter() {
-    Navigator.push(
-    context,
-    MaterialPageRoute(builder: (context)=>TaskCreate()));
-  }
 
     @override
     Widget build(BuildContext context) {
@@ -179,12 +172,8 @@ class _HomeState extends State<Home>{
                                   child: ButtonBar(
                                     children: <Widget>[
                                       FlatButton(
-                                        child: const Text('Подробнее', style: TextStyle(color: Colors.white)),
-                                        onPressed: () {
-                                          /*Navigator.push(
-                                            context,
-                                            MaterialPageRoute(builder: (context)=>TaskV(listTaskNew[index])));*/
-                                        },
+                                        child: const Text('Выполнить', style: TextStyle(color: Colors.white)),
+                                        onPressed: () {},
                                       ),
                                     ],
                                   ),
@@ -233,7 +222,7 @@ class _HomeState extends State<Home>{
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(15.0),
                             ),
-                            color: Colors.green,
+                            color: Colors.blue,
                             elevation: 10,
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
@@ -264,11 +253,6 @@ class _HomeState extends State<Home>{
                   )
                 ],
               ),
-          ),
-          floatingActionButton: FloatingActionButton(
-            onPressed: _incrementCounter,
-            tooltip: 'Increment',
-            child: Icon(Icons.add),
           ),
           bottomNavigationBar: BottomNavigationBar(
           unselectedItemColor:Colors.grey[600],

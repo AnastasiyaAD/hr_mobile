@@ -31,6 +31,7 @@ dependencies:
   flutter_local_notifications: ^4.0.1+1
   path_provider: ^1.6.0
   rxdart: 0.24.1
+  flutter_screenutil: ^2.3.1
 
 dev_dependencies:
   flutter_test:
@@ -39,3 +40,5 @@ dev_dependencies:
     sdk: flutter
   mobx_codegen: ^1.1.1+1
   build_runner: ^1.10.0  
+flutter:
+  uses-material-design: true

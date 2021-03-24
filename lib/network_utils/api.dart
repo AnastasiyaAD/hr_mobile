@@ -9,7 +9,7 @@ class Network{
 
   _getToken() async {
     SharedPreferences localStorage = await SharedPreferences.getInstance();
-    token = jsonDecode(localStorage.getString('token'))['token'];
+    token = jsonDecode(localStorage.getString('token'))['access_token'];
   }
   
   
@@ -30,9 +30,12 @@ class Network{
         headers: _setHeaders()
     );
   }
+  
 
   _setHeaders() => {
-    'Authorization' : '$token'
+    'Content-type' : 'application/json',
+    'Accept' : 'application/json',
+    'Authorization' : 'bearer $token',
   };
 
 }

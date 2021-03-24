@@ -35,7 +35,7 @@ class _LoginState extends State<Login> {
     return Scaffold(
       key: _scaffoldKey,
       body: Container(
-          color: Colors.teal,
+          color: Colors.blue[700],
           child: Stack(
             children: <Widget>[
               Positioned(
@@ -44,6 +44,33 @@ class _LoginState extends State<Login> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
+                      Container(
+                        child:
+                        Stack(
+                            children: <Widget>[
+                              // Stroked text as border.
+                              Text(
+                                'Компания-1',
+                                style: TextStyle(
+                                  fontSize: 50,
+                                  foreground: Paint()
+                                    ..style = PaintingStyle.stroke
+                                    ..strokeWidth = 6
+                                    ..color = Colors.blue[800],
+                                ),
+                              ),
+                              // Solid text as fill.
+                              Text(
+                                'Компания-1',
+                                style: TextStyle(
+                                  fontSize: 50,
+                                  color: Colors.white,
+                                ),
+                              ),
+                  
+                            ],
+                          )
+                      ),
                       Card(
                         elevation: 4.0,
                         color: Colors.white,
@@ -57,7 +84,6 @@ class _LoginState extends State<Login> {
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
-
                                 TextFormField(
                                   style: TextStyle(color: Color(0xFF000000)),
                                   cursorColor: Color(0xFF9b9b9b),
@@ -112,7 +138,7 @@ class _LoginState extends State<Login> {
                                       padding: EdgeInsets.only(
                                           top: 8, bottom: 8, left: 10, right: 10),
                                       child: Text(
-                                        _isLoading? 'Proccessing...' : 'Login',
+                                        _isLoading? 'Загрузка...' : 'Войти',
                                         textDirection: TextDirection.ltr,
                                         style: TextStyle(
                                           color: Colors.white,
@@ -122,7 +148,7 @@ class _LoginState extends State<Login> {
                                         ),
                                       ),
                                     ),
-                                    color: Colors.teal,
+                                    color: Colors.green,
                                     disabledColor: Colors.grey,
                                     shape: new RoundedRectangleBorder(
                                         borderRadius:
@@ -140,7 +166,7 @@ class _LoginState extends State<Login> {
                         ),
                       ),
 
-                      Padding(
+                      /*Padding(
                         padding: const EdgeInsets.only(top: 20),
                         child: InkWell(
                           onTap: () {
@@ -159,7 +185,7 @@ class _LoginState extends State<Login> {
                             ),
                           ),
                         ),
-                      ),
+                      ),*/
                     ],
                   ),
                 ),
@@ -192,17 +218,19 @@ class _LoginState extends State<Login> {
     var res = await Network().authData(data, '/auth/login');
     var body = json.decode(res.body);
     print("ALL");
-    print(body.toString());
+    print(body['access_token']);
     try{
-      if(body['error']==null){
+      if(body['access_token']!=null){
+        print("ALL USER INFO start");
         SharedPreferences localStorage = await SharedPreferences.getInstance();
-        localStorage.setString('token', json.encode(body['token']));
+        localStorage.setString('token', json.encode(body));
+        print("token");
         var res2 = await Network().getData('/auth/info');
         var body2 = json.decode(res2.body);
         print("ALL USER INFO");
         print(body2.toString());
-        if(body2['user']!=null){
-          localStorage.setString('user', json.encode(body2['user']));
+        if(body2['id']!=null){
+          localStorage.setString('user', json.encode(body2));
           Navigator.push(
               context,
               new MaterialPageRoute(
@@ -211,18 +239,15 @@ class _LoginState extends State<Login> {
           );
         }
         else{
-          localStorage.remove('user');
-          localStorage.remove('token');
+          _showNotification(body2.toString(),"Ошибка при получении данных о пользователе");
         }
         
       }else{
-        print(body['message']);
-        _showNotification(body['message'],"Ошибка при авторизации");
+        _showNotification(body.toString(),"Ошибка при авторизации");
       }
     }catch(e){
-      print(body);
-      _showNotification(body['message'],
-                "Ошибка при авторизации");
+      _showNotification(body.toString(),
+                "Ошибка при авторизации body['access_token']==null");
       print('auth error !!! $e');
     }
     
