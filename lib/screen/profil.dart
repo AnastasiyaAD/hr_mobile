@@ -5,12 +5,15 @@ import 'package:hr_mobile/network_utils/api.dart';
 import 'package:scrolling_page_indicator/scrolling_page_indicator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:hr_mobile/model/task.dart';
-class Home extends StatefulWidget {
+
+import 'home.dart';
+import 'listTaskCoplete.dart';
+class Profil extends StatefulWidget {
   @override
-  _HomeState createState() => _HomeState();
+  _ProfilState createState() => _ProfilState();
 }
 
-class _HomeState extends State<Home>{
+class _ProfilState extends State<Profil>{
   String name;
   int coin;
   int id;
@@ -112,29 +115,14 @@ class _HomeState extends State<Home>{
             Row(textDirection: TextDirection.ltr, children: <Widget>[
                 Expanded(
                     child: Container(
-                        child: Text('Мои задачи',
+                        child: Text('Профиль',
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 30.0,
                                 decoration: TextDecoration.none,
                                 fontWeight: FontWeight.bold,
                               )),)),
-                Expanded(
-                    child: Container(
-                        child: 
-                        RaisedButton(
-                          onPressed: (){
-                            logout();
-                          },
-                          color: Colors.grey[600],
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
-                          child: Text('Выйти',style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 15.0,
-                                              decoration: TextDecoration.none,
-                                              fontWeight: FontWeight.bold,
-                                            ),),
-                        ),))
+                
                   
           ])), 
             backgroundColor: Colors.blue[700],
@@ -144,113 +132,49 @@ class _HomeState extends State<Home>{
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Expanded(
-                    child:
-                    new ListView.builder(
-                    itemCount:listTaskNew!=null
-                    ?listTaskNew.length
-                    :0,
-                    itemBuilder: (context, index) {
-                      if(listTaskNew[index].priorityName=='Высокий'){
-                        return  Container(
-                          width: 200,
-                          child: Card(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15.0),
-                            ),
-                            color: Colors.red,
-                            elevation: 10,
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                ListTile(
-                                  leading: Icon(Icons.album, size: 70),
-                                  title: Text(listTaskNew[index].title, style: TextStyle(color: Colors.white)),
-                                  subtitle: Text(listTaskNew[index].description, style: TextStyle(color: Colors.white)),
-                                ),
-                                ButtonTheme.bar(
-                                  child: ButtonBar(
-                                    children: <Widget>[
-                                      FlatButton(
-                                        child: const Text('Выполнить', style: TextStyle(color: Colors.white)),
-                                        onPressed: () {},
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ) ; 
-                      }
-                      if(listTaskNew[index].priorityName=='Средний'){
-                        return  Container(
-                          width: 200,
-                          child: Card(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15.0),
-                            ),
-                            color: Colors.amber,
-                            elevation: 10,
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                ListTile(
-                                  leading: Icon(Icons.album, size: 70),
-                                  title: Text(listTaskNew[index].title, style: TextStyle(color: Colors.white)),
-                                  subtitle: Text(listTaskNew[index].description, style: TextStyle(color: Colors.white)),
-                                ),
-                                ButtonTheme.bar(
-                                  child: ButtonBar(
-                                    children: <Widget>[
-                                      FlatButton(
-                                        child: const Text('Выполнить', style: TextStyle(color: Colors.white)),
-                                        onPressed: () {},
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ) ;
-                      }
-                      if(listTaskNew[index].priorityName=='Низкий'){
-                        return  Container(
-                          width: 200,
-                          child: Card(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15.0),
-                            ),
-                            color: Colors.blue,
-                            elevation: 10,
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                ListTile(
-                                  leading: Icon(Icons.album, size: 70),
-                                  title: Text(listTaskNew[index].title, style: TextStyle(color: Colors.white)),
-                                  subtitle: Text(listTaskNew[index].description, style: TextStyle(color: Colors.white)),
-                                ),
-                                ButtonTheme.bar(
-                                  child: ButtonBar(
-                                    children: <Widget>[
-                                      FlatButton(
-                                        child: const Text('Выполнить', style: TextStyle(color: Colors.white)),
-                                        onPressed: () {},
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ) ;
-                      }
-                      return Container();
-                    },
-                  )
-                  )
+                      Container(
+              child: Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15.0),
+                ),
+                color: Colors.amber[100],
+                elevation: 10,
+                child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  ListTile(
+                    leading: Icon(Icons.account_box_rounded, size: 80),
+                    title: Text('\n$name\n',style: TextStyle(
+                                fontSize: 20.0,
+                                decoration: TextDecoration.none,
+                                fontWeight: FontWeight.bold,
+                              )),
+                    subtitle: Text('$rank_title\n\nОчки: $experience\n\nCoin: $coin\n',style: TextStyle(
+                                fontSize: 20.0,
+                                decoration: TextDecoration.none,
+                                fontWeight: FontWeight.bold,
+                              )),
+                              
+                  ),
+                ]),
+              ),
+            ),
+          Padding(padding: EdgeInsets.only(top:20)),
+                  Center(
+                        child: 
+                        RaisedButton(
+                          onPressed: (){
+                            logout();
+                          },
+                          color: Colors.red[700],
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                          child: Text('              Выйти              ',style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 20.0,
+                                              decoration: TextDecoration.none,
+                                              fontWeight: FontWeight.bold,
+                                            ),),
+                        ),)
                 ],
               ),
           ),
@@ -276,6 +200,21 @@ class _HomeState extends State<Home>{
             setState(() {
               _currentPage = intIndex;
             });
+            if(intIndex==0){
+               Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context)=>Home()));
+            }
+            if(intIndex==1){
+               Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context)=>ListTask()));
+            }
+            if(intIndex==2){
+               Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context)=>Profil()));
+            }
           },       
         ));
       }

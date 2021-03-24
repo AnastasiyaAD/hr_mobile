@@ -5,6 +5,7 @@ import 'package:hr_mobile/screen/login.dart';
 import 'package:hr_mobile/network_utils/api.dart';
 import 'package:hr_mobile/screen/profil.dart';
 import 'package:scrolling_page_indicator/scrolling_page_indicator.dart';
+import 'package:hr_mobile/screen/home.dart';
 import 'package:hr_mobile/injection/notifications/notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:hr_mobile/model/task.dart';
@@ -12,13 +13,16 @@ import 'package:intl/intl.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import 'listTaskCoplete.dart';
-class TaskCreate extends StatefulWidget {
+class TaskInfo extends StatefulWidget {
+  Task task;
+  TaskInfo(this.task);
+
  
   @override
-  _TaskCreateState createState() => _TaskCreateState();
+  _TaskInfoState createState() => _TaskInfoState(this.task);
 }
 
-class _TaskCreateState extends State<TaskCreate>{
+class _TaskInfoState extends State<TaskInfo>{
   String name;
   int coin;
   int id;
@@ -40,10 +44,11 @@ class _TaskCreateState extends State<TaskCreate>{
   bool _isLoading = false;
   var alluser=<String,int>{};
   List<String>alluserName=[];
+  Task task;
+  _TaskInfoState(this.task);
   @override
   void initState(){
     _controller = PageController();
-    _getuserinfoAll();
     _loadUserData();
     super.initState();
   }
@@ -74,53 +79,8 @@ class _TaskCreateState extends State<TaskCreate>{
       });
     }
   }
-  _getuserinfoAll() async{
-    var res = await Network().getData('/user/all');
-    var body = json.decode(res.body);
   
-    //coin = body['coin'];
-    //experience = body['experience'];
-    if(body!= null) {
-      setState(() {
-        for (var i = 0; i < body.length; i++) {
-          alluser.addAll({body[i]['name']:body[i]['id']});
-          alluserName.add(body[i]['name']);
-        }
-        print(alluser);
-      });
-    }
-  }
-    
-
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime picked = await showDatePicker(
-        context: context,
-        initialDate: selectedDate,
-        firstDate: DateTime.now(),
-        lastDate: DateTime(2101));
-    if (picked != null || picked != selectedDate)
-      if((picked.day==selectedDate1.day &&  picked.month==selectedDate1.month&&  picked.year==selectedDate1.year)||selectedDate1.isBefore(picked)){
-        setState(() {
-          Duration d =Duration(days: picked.compareTo(selectedDate1));
-          selectedDate1=selectedDate1.add(d);
-          selectedDate1=selectedDate1.add(Duration(days: 1));
-        });
-      }
-      setState(() {
-        selectedDate = picked;
-      });
-  }
-  Future<void> _selectDate1(BuildContext context) async {
-    final DateTime picked = await showDatePicker(
-        context: context,
-        initialDate: selectedDate1,
-        firstDate: selectedDate,
-        lastDate: DateTime(2101));
-    if (picked != null && picked != selectedDate1 && picked!=selectedDate)
-      setState(() {
-        selectedDate1 = picked;
-      });
-  }
+ 
 
   DateFormat dateFormat = DateFormat("yyyy-MM-dd");
     @override
@@ -132,7 +92,7 @@ class _TaskCreateState extends State<TaskCreate>{
             Row( children: <Widget>[
                 Expanded(
                     child: Container(
-                        child: Text('Добавить задачу',
+                        child: Text(task.title,
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 30.0,
@@ -142,87 +102,55 @@ class _TaskCreateState extends State<TaskCreate>{
           ])), 
             backgroundColor: Colors.blue[700],
           ),
-          body: Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Container(
+          body:ListView(children:[Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(children: [
+              Container(
+              child: Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15.0),
+                ),
+                color: Colors.amber[100],
+                elevation: 10,
+                child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  ListTile(
+                    title: Text('\n${task.dateStart} - ${task.dateEnd}\n',style: TextStyle(
+                                fontSize: 20.0,
+                                decoration: TextDecoration.none,
+                                fontWeight: FontWeight.bold,
+                              )),
+                    subtitle: Text('${task.description}\n\nОчки: ${task.point}\n\nПоставновщик:\n${task.userManager}\n\nОтветственный:\n$name\n',style: TextStyle(
+                                fontSize: 20.0,
+                                decoration: TextDecoration.none,
+                                fontWeight: FontWeight.bold,
+                              )),
+                  ),
+                ]),
+              ),
+            ),
+          Container(
+              padding: const EdgeInsets.only(top:30,left:8,right:8),
               child: 
               new Form(key: _formKey, 
               child: new Column(
               children: <Widget>[
                 new TextFormField(
-                  initialValue: "Название",
+                  initialValue: "Комментарий",
                   validator: (value){
-                  if (value.isEmpty || value=="Название") 
-                  return 'Введите название';
-                  else{
                     setState(() {
                       title=value;
                     });
-                  }
                 }),
-                new TextFormField(
-                  initialValue: "Описание",
-                  validator: (v){
-                  if (v.isEmpty || v=="Описание") 
-                  return 'Введите описание';
-                  else{
-                    setState(() {
-                      description=v;
-                    });
-                  }
-                }),
-                 new DropdownButton<String>(
-                   hint:typeValueName!=null 
-                   ?Text(typeValueName)
-                   :Text('Выберите приоритет задачи'),
-                    items: <String>['Высокий                                              ', 'Средний', 'Низкий'].map((String value) {
-                      return new DropdownMenuItem<String>(
-                        value: value,
-                        child: new Text(value,style: TextStyle(fontSize: 16.0),),
-                      );
-                    }).toList(),
-                    onChanged:(value) {
-                      setState(() {
-                      typeValueName=value;
-                    });}
-                  ),
-                  new DropdownButton<String>(
-                    hint: userName!=null
-                    ?Text(userName)
-                    :Text('Выберите ответственного    '),
-                    items: alluserName.map((String value) {
-                      return new DropdownMenuItem<String>(
-                        value: value,
-                        child: new Text(value,style: TextStyle(fontSize: 16.0),),
-                      );
-                    }).toList(),
-                    onChanged: (value) {
-                      setState(() {
-                      userName=value;
-                    });
-                    },
-                  ),
-                  new Row(children: [
-                  Text("Дата начала:                  ${selectedDate.toLocal().day}/${selectedDate.toLocal().month}/${selectedDate.toLocal().year}                    "),
-                  RaisedButton(
-                    onPressed: () => _selectDate(context),
-                    child: Text('Выбрать дату'),
-                  ),]),
-                  new Row(children: 
-                  [Text("Дата конца:                    ${selectedDate1.toLocal().day}/${selectedDate1.toLocal().month}/${selectedDate1.toLocal().year}                    "),
-                  RaisedButton(
-                    onPressed: () => _selectDate1(context),
-                    child: Text('Выбрать дату'),
-                  ),],),
                    Padding(
-                    padding: const EdgeInsets.all(10.0),
+                    padding: const EdgeInsets.all(15.0),
                     child: FlatButton(
                       child: Padding(
                         padding: EdgeInsets.only(
                             top: 8, bottom: 8, left: 10, right: 10),
                         child: Text(
-                          _isLoading? 'Загрузка...' : 'Сохранить',
-                          
+                          _isLoading? 'Загрузка...' : 'Выполнить',  
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 15.0,
@@ -243,10 +171,10 @@ class _TaskCreateState extends State<TaskCreate>{
                       },
                     ),
                   ),
-                              
                   
-                ])))
-            ),
+                ]))) 
+            ])),
+          ]),
           bottomNavigationBar: BottomNavigationBar(
           unselectedItemColor:Colors.grey[600],
           items: [
@@ -291,34 +219,8 @@ class _TaskCreateState extends State<TaskCreate>{
         setState(() {
           _isLoading = true;
         });
-        int priority;
-        if(typeValueName=="Высокий"){
-          setState(() {
-            priority=1;
-          });
-        }
-        if(typeValueName=="Средний"){
-          setState(() {
-            priority=2;
-          });
-        }
-        if(typeValueName=="Низкий"){
-          setState(() {
-            priority=3;
-          });
-        }
-        print(alluser[userName]);
-        var data = {
-          "title": title,
-          "description": description,
-          "date_start": dateFormat.format(selectedDate).toString(),
-          "date_end": dateFormat.format(selectedDate1).toString(),
-          "user_id": alluser[userName],
-          "user_manager":name,
-          "priority_id": priority
-        };
-
-        var res = await Network().authData(data, '/task/add');
+        
+       /* var res = await Network().authData(data, '/task/add');
         var body = json.decode(res.body);
         try{
           if(body['message']=='Successfully!'){
@@ -331,22 +233,23 @@ class _TaskCreateState extends State<TaskCreate>{
           );
           }
           else{
-            _showNotification(body,"При создании задания произошла ошибка");
+            _showNotification(body,"При сохранении прогресса произошла ошибка");
           }
         }catch(e){
-          _showNotification(' ',"При создании задания произошла ошибка");
+          _showNotification(' ',"При сохранении прогресса произошла ошибка");
           print('Create Task!!!!!!!!!! $e');
         }
-        
+        */
         setState(() {
           _isLoading = false;
         });
+        
       }
 
   Future<void> _showNotification(title, body) async {
       const AndroidNotificationDetails androidPlatformChannelSpecifics =
           AndroidNotificationDetails(
-              '12', 'hr_mobile', 'task',
+              '12', 'hr_mobile', 'task_complete',
               importance: Importance.max,
               priority: Priority.high,
               ticker: 'ticker');

@@ -206,7 +206,7 @@ class _LoginState extends State<Login> {
     Future<void> _showNotification(title, body) async {
       const AndroidNotificationDetails androidPlatformChannelSpecifics =
           AndroidNotificationDetails(
-              'your channel id', 'your MStroy', 'your channel description',
+              '12', 'hr_mobile', 'auth',
               importance: Importance.max,
               priority: Priority.high,
               ticker: 'ticker');

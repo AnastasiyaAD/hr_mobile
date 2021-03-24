@@ -9,13 +9,13 @@ import 'package:scrolling_page_indicator/scrolling_page_indicator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:hr_mobile/model/task.dart';
 
-import 'listTaskCoplete.dart';
-class Home extends StatefulWidget {
+import 'home.dart';
+class ListTask extends StatefulWidget {
   @override
-  _HomeState createState() => _HomeState();
+  _ListTaskState createState() => _ListTaskState();
 }
 
-class _HomeState extends State<Home>{
+class _ListTaskState extends State<ListTask>{
   String name;
   int coin;
   int id;
@@ -122,14 +122,14 @@ class _HomeState extends State<Home>{
             Row(textDirection: TextDirection.ltr, children: <Widget>[
                 Expanded(
                     child: Container(
-                        child: Text('Мои задачи',
+                        child: Text('Выполненные задачи',
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 30.0,
                                 decoration: TextDecoration.none,
                                 fontWeight: FontWeight.bold,
-                              )),)),
-           ])), 
+                              )),)),        
+          ])), 
             backgroundColor: Colors.blue[700],
           ),
           body: Padding(
@@ -140,26 +140,25 @@ class _HomeState extends State<Home>{
                   Expanded(
                     child:
                     new ListView.builder(
-                    itemCount:listTaskNew!=null
-                    ?listTaskNew.length
+                    itemCount:listTask!=null
+                    ?listTask.length
                     :0,
                     itemBuilder: (context, index) {
-                      if(listTaskNew[index].priorityName=='Высокий'){
                         return  Container(
                           width: 200,
                           child: Card(
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(15.0),
                             ),
-                            color: Colors.red,
+                            color: Colors.grey,
                             elevation: 10,
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: <Widget>[
                                 ListTile(
-                                  leading: Icon(Icons.auto_awesome, size: 70),
-                                  title: Text(listTaskNew[index].title, style: TextStyle(color: Colors.white)),
-                                  subtitle: Text('${listTaskNew[index].dateEnd}\n\n${listTaskNew[index].description}', style: TextStyle(color: Colors.white)),
+                                  leading: Icon(Icons.album, size: 70),
+                                  title: Text(listTask[index].title, style: TextStyle(color: Colors.white)),
+                                  subtitle: Text(listTask[index].description, style: TextStyle(color: Colors.white)),
                                 ),
                                 ButtonTheme.bar(
                                   child: ButtonBar(
@@ -169,7 +168,7 @@ class _HomeState extends State<Home>{
                                         onPressed: () {
                                           Navigator.push(
                                             context,
-                                            MaterialPageRoute(builder: (context)=>TaskInfo(listTaskNew[index])));
+                                            MaterialPageRoute(builder: (context)=>TaskInfo(listTask[index])));
                                         },
                                       ),
                                     ],
@@ -179,80 +178,6 @@ class _HomeState extends State<Home>{
                             ),
                           ),
                         ) ; 
-                      }
-                      if(listTaskNew[index].priorityName=='Средний'){
-                        return  Container(
-                          width: 200,
-                          child: Card(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15.0),
-                            ),
-                            color: Colors.amber,
-                            elevation: 10,
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                ListTile(
-                                  leading: Icon(Icons.auto_fix_high, size: 70),
-                                  title: Text(listTaskNew[index].title, style: TextStyle(color: Colors.white)),
-                                  subtitle: Text('${listTaskNew[index].dateEnd}\n\n${listTaskNew[index].description}', style: TextStyle(color: Colors.white)),
-                                ),
-                                ButtonTheme.bar(
-                                  child: ButtonBar(
-                                    children: <Widget>[
-                                      FlatButton(
-                                        child: const Text('Подробнее', style: TextStyle(color: Colors.white)),
-                                        onPressed: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(builder: (context)=>TaskInfo(listTaskNew[index])));
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ) ;
-                      }
-                      if(listTaskNew[index].priorityName=='Низкий'){
-                        return  Container(
-                          width: 200,
-                          child: Card(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15.0),
-                            ),
-                            color: Colors.green,
-                            elevation: 10,
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                ListTile(
-                                  leading: Icon(Icons.assistant, size: 70),
-                                  title: Text(listTaskNew[index].title, style: TextStyle(color: Colors.white)),
-                                  subtitle: Text('${listTaskNew[index].dateEnd}\n\n${listTaskNew[index].description}', style: TextStyle(color: Colors.white)),
-                                ),
-                                ButtonTheme.bar(
-                                  child: ButtonBar(
-                                    children: <Widget>[
-                                      FlatButton(
-                                        child: const Text('Подробнее', style: TextStyle(color: Colors.white)),
-                                        onPressed: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(builder: (context)=>TaskInfo(listTaskNew[index])));
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ) ;
-                      }
-                      return Container();
                     },
                   )
                   )
